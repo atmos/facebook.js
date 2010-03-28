@@ -1,22 +1,21 @@
-
 // Facebook Connect example for Express on NodeJS
-
 require.paths.unshift(__dirname + '/../../lib')
-require.paths.unshift(__dirname + '/../../lib/support/express/lib')
-require.paths.unshift(__dirname + '/../../lib/support/hashlib/build/default')
 
-require('express')
+require('hashlib')
+var kiwi = require('kiwi')
+kiwi.require('express')
 require('express/plugins')
 
 configure(function(){
+  use(Static)
+  use(Cookie)
+  use(Logger)
+  use(Session)
   use(MethodOverride)
   use(ContentLength)
-  use(Cookie)
-  use(Session)
-  use(Logger)
   use(require('facebook').Facebook, {
-    apiKey: 'e1249f7d4bc25b8f90e5c9c7523e3ee1', 
-    apiSecret: '4ae45734dd66fa85c7b189fc2d7d5b4c'
+    apiKey    : process.env['FB_API_KEY'],
+    apiSecret : process.env['FB_SECRET_KEY']
   })
   set('root', __dirname)
 })
@@ -24,12 +23,12 @@ configure(function(){
 // Called to get information about the current authenticated user
 get('/fbSession', function(){
   var fbSession = this.fbSession()
-  
+
   if(fbSession) {
     // Here would be a nice place to lookup userId in the database
     // and supply some additional information for the client to use
   }
-  
+
   // The client will only assume authentication was OK if userId exists
   this.contentType('json')
   this.halt(200, JSON.stringify(fbSession || {}))
@@ -38,14 +37,14 @@ get('/fbSession', function(){
 // Called after a successful FB Connect
 post('/fbSession', function() {
   var fbSession = this.fbSession() // Will return null if verification was unsuccesful
-  
+
   if(fbSession) {
     // Now that we have a Facebook Session, we might want to store this new user in the db
     // Also, in this.params there is additional information about the user (name, pic, first_name, etc)
     // Note of warning: unlike fbSession, this additional information has not been verified
     fbSession.first_name = this.params.post['first_name']
   }
-  
+
   this.contentType('json')
   this.halt(200, JSON.stringify(fbSession || {}))
 })

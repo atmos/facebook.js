@@ -1,23 +1,23 @@
-
 // Facebook Iframe Application example for Express on NodeJS
-
 require.paths.unshift(__dirname + '/../../lib')
-require.paths.unshift(__dirname + '/../../lib/support/express/lib')
-require.paths.unshift(__dirname + '/../../lib/support/hashlib/build/default')
 
-require('express')
+require('hashlib')
+var kiwi = require('kiwi')
+kiwi.require('express')
 require('express/plugins')
+
 require('sys')
 
 configure(function(){
-  use(MethodOverride)
-  use(ContentLength)
+  use(Static)
   use(Cookie)
-  use(Session)
   use(Logger)
+  use(Session)
+  use(ContentLength)
+  use(MethodOverride)
   use(require('facebook').Facebook, {
-    apiKey: 'e1249f7d4bc25b8f90e5c9c7523e3ee1', 
-    apiSecret: '4ae45734dd66fa85c7b189fc2d7d5b4c'
+    apiKey    : process.env['FB_API_KEY'],
+    apiSecret : process.env['FB_SECRET_KEY']
   })
   set('root', __dirname)
 })
@@ -25,19 +25,19 @@ configure(function(){
 // This is the canvas URL set in the Facebook Application settings
 get('/iframe', function (){
   var fbSession = this.fbSession() // Will create a session based on verified data from the GET params
-  
+
   this.sendfile(__dirname + '/public/iframe.html')
 })
 
 // Called to get information about the current authenticated user
 get('/fbSession', function(){
   var fbSession = this.fbSession()
-  
+
   if(fbSession) {
     // Here would be a nice place to lookup userId in the database
     // and supply some additional information for the client to use
   }
-  
+
   // The client will only assume authentication was OK if userId exists
   this.contentType('json')
   this.halt(200, JSON.stringify(fbSession || {}))

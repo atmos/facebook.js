@@ -7,13 +7,13 @@
  */
 
 (function($){
-  
+
   // Note: these variables are cache, validation is still server-side
   var authenticated = null;
   var authenticatedFbSession = null;
   var apiKey = null;
   var fbOptions = null;
-  
+
   /**
    * Initialize the Facebook JS API, only call this once.
    *
@@ -33,7 +33,7 @@
       FB.Facebook.init(api_key, fbOptions['xd_receiver'] || '/xd_receiver.htm');
     });
   };
-  
+
   /**
    * Start the Facebook Connect process.
    *
@@ -72,7 +72,7 @@
       });
     });
   };
-  
+
   /**
    * Logout from Facebook and the current application.
    *
@@ -91,7 +91,7 @@
        }, 'json');
     });
   };
-  
+
   /**
    * Check whether the user is authenticated.
    *
@@ -124,7 +124,7 @@
       not_authenticated_callback();
     }
   };
-  
+
   /**
    * Fetch profile fields for authenticated user
    *
@@ -136,7 +136,7 @@
    */
   $.fbProfile = function (fields, callback) {
     FB_RequireFeatures(["Api"], function() {
-      FB.Facebook.apiClient.fql_query("SELECT " + fields.join(', ') + " FROM user WHERE uid="+$.fbCookie('user'), function (rows) { 
+      FB.Facebook.apiClient.fql_query("SELECT " + fields.join(', ') + " FROM user WHERE uid="+$.fbCookie('user'), function (rows) {
         callback(rows[0]);
       });
     });
@@ -166,7 +166,7 @@
     }
     return cookieValue;
   };
-  
+
   /**
    * Authenticate a Facebook iFrame Application
    *
@@ -191,5 +191,5 @@
     var url = "http://www.facebook.com/login.php?api_key="+apiKey+''+next+"&display=popup&fbconnect=true"+req_perms;
     window.open(url);
   };
-  
+
 })(jQuery);

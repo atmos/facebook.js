@@ -8,26 +8,18 @@ There are two main ways of integrating with Facebook and both require you to "si
 
 h2. Dependencies
 
-In order to use these plugins, you need to install both "NodeJS":http://nodejs.org and the "Express Web Framework":http://github.com/visionmedia/express/ on top of it. 
+In order to use these plugins, you need to install both "NodeJS":http://nodejs.org and the "Express Web Framework":http://github.com/visionmedia/express/ on top of it.
 
 Express can easily be installed like this:
 
-<pre><code>cd myproject
+<pre><code>kiwi install express
+cd myproject
 git init
 mkdir -p lib/support
 
-git submodule add git://github.com/visionmedia/express.git lib/support/express
-cd lib/support/express
-git submodule init
-git submodule update
 </code></pre>
 
 Also, we need to install "hashlib":http://github.com/brainfucker/hashlib, a NodeJS library provided by mr Brainfucker:
-
-<pre><code>git submodule add git://github.com/brainfucker/hashlib.git lib/support/hashlib
-cd lib/support/hashlib
-make
-</code></pre>
 
 h2. Setting up your Project
 
@@ -43,14 +35,14 @@ mkdir -p public/javascripts
 3. Place a file called xd_receiver.htm into your public directory, this is for "Facebook cross-domain communication":http://wiki.developers.facebook.com/index.php/Cross_Domain_Communication_Channel:
 
 <pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml" > 
-<head> 
-    <title>Cross-Domain Receiver Page</title> 
-</head> 
-<body> 
-    <script src="http://static.ak.facebook.com/js/api_lib/v0.4/XdCommReceiver.js?v2" type="text/javascript"></script> 
-</body> 
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Cross-Domain Receiver Page</title>
+</head>
+<body>
+    <script src="http://static.ak.facebook.com/js/api_lib/v0.4/XdCommReceiver.js?v2" type="text/javascript"></script>
+</body>
 </html>
 </code></pre>
 
@@ -74,8 +66,8 @@ configure(function(){
   use(Session)
   use(Logger)
   use(require('facebook').Facebook, {
-    apiKey: 'e1249f7d4bc25b8f90e5c9c7523e3ee1', 
-    apiSecret: '4ae45734dd66fa85c7b189fc2d7d5b4c'
+    apiKey    : 'e1249f7d4bc25b8f90e5c9c7523e3ee1',
+    apiSecret : '4ae45734dd66fa85c7b189fc2d7d5b4c'
   })
   set('root', __dirname)
 })
@@ -126,15 +118,15 @@ run()
 
 h3. /public/index.html
 
-<pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"> 
- <head> 
+<pre><code><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+ <head>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.facebook.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
         $.fbInit('e1249f7d4bc25b8f90e5c9c7523e3ee1');
-        
+
         // FB Connect action
         $('#fb-connect').bind('click', function () {
           $.fbConnect({'include': ['first_name', 'last_name', 'name', 'pic']}, function (fbSession) {
@@ -144,7 +136,7 @@ h3. /public/index.html
           });
           return false;
         });
-        
+
         // FB Logout action
         $('#fb-logout').bind('click', function () {
           $.fbLogout(function () {
@@ -153,7 +145,7 @@ h3. /public/index.html
           });
           return false;
         });
-        
+
         // Check whether we're logged in and arrange page accordingly
         $.fbIsAuthenticated(function (fbSession) {
           // Authenticated!
@@ -163,15 +155,15 @@ h3. /public/index.html
           // Not authenticated
           $('.not_authenticated').show();
         });
-        
+
       });
     </script>
   </head>
-  
+
   <body>
     <div id="fb-root"></div>
     <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-    
+
     <div id="my-account">
       <div class="authenticated" style="display: none">
         Hi there <span id="fb-first_name"></span>!
@@ -181,8 +173,8 @@ h3. /public/index.html
         <a href="#" id="fb-connect">Connect with Facebook</a>
       </div>
     </div>
-  </body> 
-</html> 
+  </body>
+</html>
 </code></pre>
 
 h2. Example 2: A Facebook Application running in the Canvas
@@ -205,8 +197,8 @@ configure(function(){
   use(Session)
   use(Logger)
   use(require('facebook').Facebook, {
-    apiKey: 'e1249f7d4bc25b8f90e5c9c7523e3ee1', 
-    apiSecret: '4ae45734dd66fa85c7b189fc2d7d5b4c'
+    apiKey    : 'e1249f7d4bc25b8f90e5c9c7523e3ee1',
+    apiSecret : '4ae45734dd66fa85c7b189fc2d7d5b4c'
   })
   set('root', __dirname)
 })
@@ -242,8 +234,8 @@ run()
 h3. /public/iframe.html
 
 <pre><code>
-<html> 
- <head> 
+<html>
+ <head>
     <title>Nodogoshi</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.facebook.js"></script>
@@ -282,8 +274,8 @@ h3. /public/iframe.html
         Viewing anonymously, <a href="#" id="authenticate">click here</a> to authenticate.
       </div>
     </div>
-  </body> 
-</html> 
+  </body>
+</html>
 </code></pre>
 
 h2. License
