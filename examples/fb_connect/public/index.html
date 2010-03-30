@@ -6,44 +6,14 @@
     <script type="text/javascript">
       $(document).ready(function () {
         $.fbInit('14cfed791b3bb01c5f151d6599e4875f');
-
-        // FB Connect action
-        $('#fb-connect').bind('click', function () {
-          $.fbConnect({'include': ['first_name', 'last_name', 'name', 'pic']}, function (fbSession) {
-            $('.not_authenticated').hide();
-            $('.authenticated').show();
-            $('#fb-name').html(fbSession.name);
-          });
-          return false;
-        });
-
-        // FB Logout action
-        $('#fb-logout').bind('click', function () {
-          $.fbLogout(function () {
-            $('.authenticated').toggle();
-            $('.not_authenticated').toggle();
-          });
-          return false;
-        });
-
-        // Check whether we're logged in and arrange page accordingly
-        $.fbIsAuthenticated(function (fbSession) {
-          // Authenticated!
-          $('.authenticated').show();
-          $('#fb-name').html(fbSession.name);
-        }, function () {
-          // Not authenticated
-          $('.not_authenticated').show();
-        });
-
       });
     </script>
+    <script type="text/javascript" src="/public/javascripts/app.js"></script>
+    <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
   </head>
 
   <body>
     <div id="fb-root"></div>
-    <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-
     <div id="my-account">
       <div class="authenticated" style="display: none">
         Hi there <span id="fb-name"></span>!

@@ -52,65 +52,31 @@ See "examples/fb_connect":node-facebook/blob/master/examples/fb_connect for the 
 
 h3. /app.js
 
-<pre><code>require.paths.unshift(__dirname + '/lib')
-require.paths.unshift(__dirname + '/lib/support/express/lib')
-require.paths.unshift(__dirname + '/lib/support/hashlib/build/default')
+<pre><code>
+require.paths.unshift(__dirname + '/../../lib')
+require('hashlib')
 
-require('express')
-require('express/plugins')
+var kiwi = require('kiwi')
+
+kiwi.require('express')
+     require('express/plugins')
 
 configure(function(){
-  use(MethodOverride)
-  use(ContentLength)
+  use(Static)
   use(Cookie)
-  use(Session)
   use(Logger)
+  use(Session, { lifetime: (15).minutes, reapInterval: (1).minute })
+  use(ContentLength)
+  use(MethodOverride)
   use(require('facebook').Facebook, {
-    apiKey    : 'e1249f7d4bc25b8f90e5c9c7523e3ee1',
-    apiSecret : '4ae45734dd66fa85c7b189fc2d7d5b4c'
+    apiKey    : process.env['FB_API_KEY'],
+    apiSecret : process.env['FB_SECRET_KEY']
   })
   set('root', __dirname)
 })
 
-// Called to get information about the current authenticated user
-get('/fbSession', function(){
-  var fbSession = this.fbSession()
-
-  if(fbSession) {
-    // Here would be a nice place to lookup userId in the database
-    // and supply some additional information for the client to use
-  }
-
-  // The client will only assume authentication was OK if userId exists
-  this.contentType('json')
-  this.halt(200, JSON.stringify(fbSession || {}))
-})
-
-// Called after a successful FB Connect
-post('/fbSession', function() {
-  var fbSession = this.fbSession() // Will return null if verification was unsuccesful
-
-  if(fbSession) {
-    // Now that we have a Facebook Session, we might want to store this new user in the db
-    // Also, in this.params there is additional information about the user (name, pic, first_name, etc)
-    // Note of warning: unlike fbSession, this additional information has not been verified
-    fbSession.first_name = this.params.post['first_name']
-  }
-
-  this.contentType('json')
-  this.halt(200, JSON.stringify(fbSession || {}))
-})
-
-// Called on Facebook logout
-post('/fbLogout', function() {
-  this.fbLogout();
-  this.halt(200, JSON.stringify({}))
-})
-
 // Static files in ./public
 get('/', function(file){ this.sendfile(__dirname + '/public/index.html') })
-get('/xd_receiver.htm', function(file){ this.sendfile(__dirname + '/public/xd_receiver.htm') })
-get('/javascripts/jquery.facebook.js', function(file){ this.sendfile(__dirname + '/public/javascripts/jquery.facebook.js') })
 
 run()
 
@@ -123,47 +89,17 @@ h3. /public/index.html
  <head>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.facebook.js"></script>
+    <script type="text/javascript" src="/javascripts/app.js"></script>
     <script type="text/javascript">
       $(document).ready(function () {
         $.fbInit('e1249f7d4bc25b8f90e5c9c7523e3ee1');
-
-        // FB Connect action
-        $('#fb-connect').bind('click', function () {
-          $.fbConnect({'include': ['first_name', 'last_name', 'name', 'pic']}, function (fbSession) {
-            $('.not_authenticated').hide();
-            $('.authenticated').show();
-            $('#fb-first_name').html(fbSession.first_name);
-          });
-          return false;
-        });
-
-        // FB Logout action
-        $('#fb-logout').bind('click', function () {
-          $.fbLogout(function () {
-            $('.authenticated').hide();
-            $('.not_authenticated').show();
-          });
-          return false;
-        });
-
-        // Check whether we're logged in and arrange page accordingly
-        $.fbIsAuthenticated(function (fbSession) {
-          // Authenticated!
-          $('.authenticated').show();
-          $('#fb-first_name').html(fbSession.first_name);
-        }, function () {
-          // Not authenticated
-          $('.not_authenticated').show();
-        });
-
       });
     </script>
+    <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
   </head>
 
   <body>
     <div id="fb-root"></div>
-    <script type="text/javascript" src="http://static.ak.connect.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-
     <div id="my-account">
       <div class="authenticated" style="display: none">
         Hi there <span id="fb-first_name"></span>!
@@ -183,49 +119,35 @@ See "examples/fb_iframe":node-facebook/blob/master/examples/fb_iframe for the th
 
 h3. /app.js
 
-<pre><code>require.paths.unshift(__dirname + '/lib')
-require.paths.unshift(__dirname + '/lib/support/express/lib')
-require.paths.unshift(__dirname + '/lib/support/hashlib/build/default')
+<pre><code>
+require.paths.unshift(__dirname + '/../../lib')
+require('hashlib')
 
-require('express')
-require('express/plugins')
+var kiwi = require('kiwi')
+
+kiwi.require('express')
+     require('express/plugins')
 
 configure(function(){
-  use(MethodOverride)
-  use(ContentLength)
+  use(Static)
   use(Cookie)
-  use(Session)
   use(Logger)
+  use(Session, { lifetime: (15).minutes, reapInterval: (1).minute })
+  use(ContentLength)
+  use(MethodOverride)
   use(require('facebook').Facebook, {
-    apiKey    : 'e1249f7d4bc25b8f90e5c9c7523e3ee1',
-    apiSecret : '4ae45734dd66fa85c7b189fc2d7d5b4c'
+    apiKey    : process.env['FB_API_KEY'],
+    apiSecret : process.env['FB_SECRET_KEY']
   })
   set('root', __dirname)
 })
 
+// Static files in ./public
 // This is the canvas URL set in the Facebook Application settings
 get('/iframe', function (){
   var fbSession = this.fbSession() // Will create a session based on verified data from the GET params
   this.sendfile(__dirname + '/public/iframe.html')
 })
-
-// Called to get information about the current authenticated user
-get('/fbSession', function(){
-  var fbSession = this.fbSession()
-
-  if(fbSession) {
-    // Here would be a nice place to lookup userId in the database
-    // and supply some additional information for the client to use
-  }
-
-  // The client will only assume authentication was OK if userId exists
-  this.contentType('json')
-  this.halt(200, JSON.stringify(fbSession || {}))
-})
-
-// Static files in ./public
-get('/xd_receiver.htm', function(file){ this.sendfile(__dirname + '/public/xd_receiver.htm') })
-get('/javascripts/jquery.facebook.js', function(file){ this.sendfile(__dirname + '/public/javascripts/jquery.facebook.js') })
 
 run()
 
@@ -239,10 +161,10 @@ h3. /public/iframe.html
     <title>Nodogoshi</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js"></script>
     <script type="text/javascript" src="/javascripts/jquery.facebook.js"></script>
-
     <script type="text/javascript">
       $(document).ready(function () {
         $.fbInit('e1249f7d4bc25b8f90e5c9c7523e3ee1');
+
         // Check whether we're logged in and arrange page accordingly
         $.fbIsAuthenticated(function (fbSession) {
           // Authenticated!
@@ -260,15 +182,15 @@ h3. /public/iframe.html
         });
       });
     </script>
+    <script type="text/javascript" src="http://static.ak.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
   </head>
 
   <body>
     <div id="fb-root"></div>
-    <script type="text/javascript" src="http://static.ak.facebook.com/js/api_lib/v0.4/FeatureLoader.js.php"></script>
-
     <div id="my-account">
       <div class="authenticated" style="display: none">
         Hi there <span id="fb-first_name"></span>!
+        <a href="#" id="fb-logout">Logout</a>
       </div>
       <div class="not_authenticated" style="display: none">
         Viewing anonymously, <a href="#" id="authenticate">click here</a> to authenticate.
