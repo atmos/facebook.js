@@ -43,8 +43,4 @@ get('/fbSession', function(){
   this.halt(200, JSON.stringify(fbSession || {}))
 })
 
-// Static files in ./public
-get('/xd_receiver.htm', function(file){ this.sendfile(__dirname + '/public/xd_receiver.htm') })
-get('/javascripts/jquery.facebook.js', function(file){ this.sendfile(__dirname + '/public/javascripts/jquery.facebook.js') })
-
 run()

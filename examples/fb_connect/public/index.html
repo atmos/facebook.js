@@ -12,7 +12,7 @@
           $.fbConnect({'include': ['first_name', 'last_name', 'name', 'pic']}, function (fbSession) {
             $('.not_authenticated').hide();
             $('.authenticated').show();
-            $('#fb-first_name').html(fbSession.first_name);
+            $('#fb-name').html(fbSession.name);
           });
           return false;
         });
@@ -20,8 +20,8 @@
         // FB Logout action
         $('#fb-logout').bind('click', function () {
           $.fbLogout(function () {
-            $('.authenticated').hide();
-            $('.not_authenticated').show();
+            $('.authenticated').toggle();
+            $('.not_authenticated').toggle();
           });
           return false;
         });
@@ -30,7 +30,7 @@
         $.fbIsAuthenticated(function (fbSession) {
           // Authenticated!
           $('.authenticated').show();
-          $('#fb-first_name').html(fbSession.first_name);
+          $('#fb-name').html(fbSession.name);
         }, function () {
           // Not authenticated
           $('.not_authenticated').show();
@@ -46,7 +46,7 @@
 
     <div id="my-account">
       <div class="authenticated" style="display: none">
-        Hi there <span id="fb-first_name"></span>!
+        Hi there <span id="fb-name"></span>!
         <a href="#" id="fb-logout">Logout</a>
       </div>
       <div class="not_authenticated" style="display: none">
