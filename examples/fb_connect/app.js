@@ -1,11 +1,11 @@
 // Facebook Connect example for Express on NodeJS
 require.paths.unshift(__dirname + '/../../lib')
-require('hashlib')
 
 var kiwi = require('kiwi')
 
 kiwi.require('express')
      require('express/plugins')
+     require('facebook')
 
 configure(function(){
   use(Static)
